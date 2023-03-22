@@ -1,26 +1,150 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface FormState {
+  date: Date;
+  name: string;
+  location: string;
 }
+
+type OptionType = {
+  [key: string]: string[];
+};
+
+const options: OptionType = {
+  alimentacao: ["hortifruti", "mercado"],
+  casa: ["cachorro", "condominio"],
+};
+
+const App: React.FC = () => {
+  const [formState, setFormState] = useState<FormState>({
+    date: new Date(),
+    name: '',
+    location: '',
+  });
+
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedOption, setSelectedOption] = useState<string>("");
+
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(event.target.value);
+    setSelectedOption("");
+  };
+
+  const handleOptionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormState({ ...formState, [name]: value });
+  };
+
+  const handleDateChange = (date: Date) => {
+    setFormState({ ...formState, date });
+  };
+
+  useEffect(() => {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setFormState({
+          ...formState,
+          location: `https://www.google.com/maps?q=${latitude},${longitude}`,
+        });
+      });
+    }
+  }, [formState]);
+  const generateCsv = () => {
+    const csvData = [
+      ['Date', 'Name', 'Location','selectedCategory','selectedOption'],
+      [
+        formState.date.toLocaleDateString(),
+        formState.name,
+        formState.location,
+        selectedCategory,
+        selectedOption
+      ],
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    const worksheet = XLSX.utils.aoa_to_sheet(csvData);
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+    const csvBuffer = XLSX.write(workbook, {
+      bookType: 'csv',
+      type: 'array',
+    });
+    const blob = new Blob([csvBuffer], { type: 'text/csv' });
+    FileSaver.saveAs(blob, 'data.csv');
+  };
+
+  return (
+    <div>
+      <label htmlFor="date">Date:</label>
+      <DatePicker
+        id="date"
+        name="date"
+        selected={formState.date}
+        onChange={handleDateChange}
+        dateFormat="yyyy/MM/dd"
+      />
+
+      <label htmlFor="name">Name:</label>
+      <input
+        id="name"
+        name="name"
+        type="text"
+        value={formState.name}
+        onChange={handleFormChange}
+      />
+
+      <label htmlFor="location">Location:</label>
+      <input
+        id="location"
+        name="location"
+        type="text"
+        value={formState.location}
+        onChange={handleFormChange}
+        readOnly
+      />
+
+      {formState.location && (
+        <a href={formState.location} target="_blank" rel="noreferrer">
+          View on Google Maps
+        </a>
+      )}
+      <div>
+        <label htmlFor="category-select">Category:</label>
+        <select id="category-select" value={selectedCategory} onChange={handleCategoryChange}>
+          <option value="">Select a category</option>
+          {Object.keys(options).map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
+        </select>
+
+        {selectedCategory && (
+          <div>
+            <label htmlFor="option-select">Option:</label>
+            <select id="option-select" value={selectedOption} onChange={handleOptionChange}>
+              <option value="">Select an option</option>
+              {options[selectedCategory].map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+      </div>
+      <button onClick={generateCsv}>Download CSV</button>
+    </div>
+    
+  );
+};
 
 export default App;
