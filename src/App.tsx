@@ -81,6 +81,16 @@ const options: OptionType = {
 
 };
 
+interface Expence {
+  data: Date,
+  name: String,
+  location: String,
+  category: String, 
+  subcategory: String
+}
+
+const listOfExpences: Expence[] = [];
+
 const App: React.FC = () => {
   const [formState, setFormState] = useState<FormState>({
     date: new Date(),
@@ -120,20 +130,29 @@ const App: React.FC = () => {
       });
     }
   }, [formState]);
-  const generateCsv = () => {
-    const csvData = [
-      ['Date', 'Name', 'Location','selectedCategory','selectedOption'],
-      [
-        formState.date.toLocaleDateString(),
-        formState.name,
-        formState.location,
-        selectedCategory,
-        selectedOption
-      ],
-    ];
 
+
+
+  const addToList = () =>{
+    const entry : Expence = { 
+      data: formState.date, 
+      name: formState.name,
+      location: formState.location,
+      category: selectedCategory,
+       subcategory: selectedOption
+    }
+    listOfExpences.push(entry);
+    console.log(listOfExpences);
+  }
+
+  const generateCsv = () => {
+    console.log('processing list of expences ' + listOfExpences.map( val =>[val.data.toLocaleDateString(), val.name, val.location, val.category, val.subcategory]));
+    const csvData = [];
+    csvData.push(['Date', 'Name', 'Location','selectedCategory','selectedOption']);
+    const aux : any[] = listOfExpences.map( val => [val.data.toLocaleDateString(), val.name, val.location, val.category, val.subcategory]);
+    const concatenated = csvData.concat(aux);
     const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet(csvData);
+    const worksheet = XLSX.utils.aoa_to_sheet(concatenated);
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
     const csvBuffer = XLSX.write(workbook, {
       bookType: 'csv',
@@ -203,6 +222,7 @@ const App: React.FC = () => {
           </div>
         )}
       </div>
+      <button onClick={addToList}>Add</button>
       <button onClick={generateCsv}>Download CSV</button>
     </div>
     
