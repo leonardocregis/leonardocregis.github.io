@@ -6,7 +6,8 @@ import * as XLSX from 'xlsx';
 
 interface FormState {
   date: Date;
-  name: string;
+  description: string;
+  valor: number;
   location: string;
 }
 
@@ -83,7 +84,8 @@ const options: OptionType = {
 
 interface Expence {
   data: Date,
-  name: String,
+  description: String,
+  valor: Number,
   location: String,
   category: String, 
   subcategory: String
@@ -94,7 +96,8 @@ const listOfExpences: Expence[] = [];
 const App: React.FC = () => {
   const [formState, setFormState] = useState<FormState>({
     date: new Date(),
-    name: '',
+    description: '',
+    valor: 0,
     location: '',
   });
 
@@ -136,7 +139,8 @@ const App: React.FC = () => {
   const addToList = () =>{
     const entry : Expence = { 
       data: formState.date, 
-      name: formState.name,
+      description: formState.description,
+      valor: formState.valor,
       location: formState.location,
       category: selectedCategory,
        subcategory: selectedOption
@@ -146,10 +150,10 @@ const App: React.FC = () => {
   }
 
   const generateCsv = () => {
-    console.log('processing list of expences ' + listOfExpences.map( val =>[val.data.toLocaleDateString(), val.name, val.location, val.category, val.subcategory]));
+    console.log('processing list of expences ' + listOfExpences.map( val =>[val.data.toLocaleDateString(), val.description, val.location, val.category, val.subcategory]));
     const csvData = [];
-    csvData.push(['Date', 'Name', 'Location','selectedCategory','selectedOption']);
-    const aux : any[] = listOfExpences.map( val => [val.data.toLocaleDateString(), val.name, val.location, val.category, val.subcategory]);
+    csvData.push(['Date', 'Description','valor','Location','selectedCategory','selectedOption']);
+    const aux : any[] = listOfExpences.map( val => [val.data.toLocaleDateString(), val.description, val.valor, val.location, val.category, val.subcategory]);
     const concatenated = csvData.concat(aux);
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(concatenated);
@@ -173,12 +177,12 @@ const App: React.FC = () => {
         dateFormat="yyyy/MM/dd"
       />
 
-      <label htmlFor="name">Name:</label>
+      <label htmlFor="description">Description:</label>
       <input
-        id="name"
-        name="name"
+        id="description"
+        name="description"
         type="text"
-        value={formState.name}
+        value={formState.description}
         onChange={handleFormChange}
       />
 
