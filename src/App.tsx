@@ -97,10 +97,21 @@ const App: React.FC = () => {
   const [formState, setFormState] = useState<FormState>({
     date: new Date(),
     description: '',
-    valor: 0,
+    valor: 0.0,
     location: '',
   });
 
+    // shouldUpdate function to prevent re-rendering on every keypress
+    const shouldUpdate = React.useCallback(
+      (prevValues: FormState, nextValues: FormState) => {
+        // Only re-render if the form values have changed
+        return prevValues.description !== nextValues.description ||
+               prevValues.valor !== nextValues.valor ||
+               prevValues.location !== nextValues.location;
+      },
+      []
+    );
+  
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<string>("");
 
@@ -183,6 +194,15 @@ const App: React.FC = () => {
         name="description"
         type="text"
         value={formState.description}
+        onChange={handleFormChange}
+      />
+
+      <label htmlFor="description">Valor:</label>
+      <input
+        id="valor"
+        name="valor"
+        type="number"
+        value={formState.valor}
         onChange={handleFormChange}
       />
 
