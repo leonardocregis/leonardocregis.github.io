@@ -4,13 +4,6 @@ import 'react-datepicker/dist/react-datepicker.css';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 
-interface FormState {
-  date: Date;
-  description: string;
-  valor: number;
-  location: string;
-}
-
 type OptionType = {
   [key: string]: string[];
 };
@@ -91,29 +84,32 @@ interface Expence {
   subcategory: String
 }
 
+
 const listOfExpences: Expence[] = [];
 
 const App: React.FC = () => {
-  const [formState, setFormState] = useState<FormState>({
-    date: new Date(),
-    description: '',
-    valor: 0.0,
-    location: '',
-  });
-
-    // shouldUpdate function to prevent re-rendering on every keypress
-    const shouldUpdate = React.useCallback(
-      (prevValues: FormState, nextValues: FormState) => {
-        // Only re-render if the form values have changed
-        return prevValues.description !== nextValues.description ||
-               prevValues.valor !== nextValues.valor ||
-               prevValues.location !== nextValues.location;
-      },
-      []
-    );
   
+  
+  const [date, setDate] = useState<Date>(new Date());
+  const [valor, setValor] = useState<number>(0.0);
+  const [location, setLocation] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<string>("");
+
+
+  const handleValor = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setValor(Number(event.target.value));
+  };
+
+
+  const handleLocation = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocation(event.target.value);
+  };
+
+  const handleDescriptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(event.target.value);
+  };
 
   const handleCategoryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCategory(event.target.value);
@@ -124,35 +120,30 @@ const App: React.FC = () => {
     setSelectedOption(event.target.value);
   };
 
-  const handleFormChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormState({ ...formState, [name]: value });
-  };
 
   const handleDateChange = (date: Date) => {
-    setFormState({ ...formState, date });
+    setDate( date );
   };
 
   useEffect(() => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
-        setFormState({
-          ...formState,
-          location: `https://www.google.com/maps?q=${latitude},${longitude}`,
-        });
+        setLocation(
+          `https://www.google.com/maps?q=${latitude},${longitude}`
+        );
       });
     }
-  }, [formState]);
+  }, [location]);
 
 
 
   const addToList = () =>{
     const entry : Expence = { 
-      data: formState.date, 
-      description: formState.description,
-      valor: formState.valor,
-      location: formState.location,
+      data: date, 
+      description: description,
+      valor: valor,
+      location: location,
       category: selectedCategory,
        subcategory: selectedOption
     }
@@ -183,7 +174,7 @@ const App: React.FC = () => {
       <DatePicker
         id="date"
         name="date"
-        selected={formState.date}
+        selected={date}
         onChange={handleDateChange}
         dateFormat="yyyy/MM/dd"
       />
@@ -193,8 +184,8 @@ const App: React.FC = () => {
         id="description"
         name="description"
         type="text"
-        value={formState.description}
-        onChange={handleFormChange}
+        value= {description}
+        onChange={handleDescriptionChange}
       />
 
       <label htmlFor="description">Valor:</label>
@@ -202,8 +193,8 @@ const App: React.FC = () => {
         id="valor"
         name="valor"
         type="number"
-        value={formState.valor}
-        onChange={handleFormChange}
+        value={valor}
+        onChange={handleValor}
       />
 
       <label htmlFor="location">Location:</label>
@@ -211,13 +202,13 @@ const App: React.FC = () => {
         id="location"
         name="location"
         type="text"
-        value={formState.location}
-        onChange={handleFormChange}
+        value={location}
+        onChange={handleLocation}
         readOnly
       />
 
-      {formState.location && (
-        <a href={formState.location} target="_blank" rel="noreferrer">
+      {location && (
+        <a href={location} target="_blank" rel="noreferrer">
           View on Google Maps
         </a>
       )}
