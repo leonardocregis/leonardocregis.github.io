@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as FileSaver from 'file-saver';
@@ -89,6 +89,10 @@ const listOfExpences: Expence[] = [];
 
 const App: React.FC = () => {
   
+  useEffect (() => {
+    getCurrentLocaction();
+
+  },[]);
   
   const [date, setDate] = useState<Date>(new Date());
   const [valor, setValor] = useState<number>(0.0);
@@ -96,7 +100,6 @@ const App: React.FC = () => {
   const [description, setDescription] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<string>("");
-
 
   const handleValor = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValor(Number(event.target.value));
@@ -125,7 +128,9 @@ const App: React.FC = () => {
     setDate( date );
   };
 
-  useEffect(() => {
+  
+
+  const getCurrentLocaction =  () => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
         const { latitude, longitude } = position.coords;
@@ -134,10 +139,8 @@ const App: React.FC = () => {
         );
       });
     }
-  }, [location]);
-
-
-
+  };
+  
   const addToList = () =>{
     const entry : Expence = { 
       data: date, 
@@ -204,7 +207,6 @@ const App: React.FC = () => {
         type="text"
         value={location}
         onChange={handleLocation}
-        readOnly
       />
 
       {location && (
@@ -243,5 +245,6 @@ const App: React.FC = () => {
     
   );
 };
+
 
 export default App;
