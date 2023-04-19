@@ -41,6 +41,9 @@ Under the hood, the predeploy script will build a distributable version of the R
 
 see about the tool on : [react-gh-pages](https://github.com/gitname/react-gh-pages)
 
+### check deployed file on [link](https://leonardocregis.github.io/)
+
+
 ### `yarn eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
