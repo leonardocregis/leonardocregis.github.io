@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/leonarocregis/static/css/main.de66ca14.css",
-    "main.js": "/leonarocregis/static/js/main.cb758226.js",
-    "static/js/787.d84832dd.chunk.js": "/leonarocregis/static/js/787.d84832dd.chunk.js",
-    "index.html": "/leonarocregis/index.html",
-    "main.de66ca14.css.map": "/leonarocregis/static/css/main.de66ca14.css.map",
-    "main.cb758226.js.map": "/leonarocregis/static/js/main.cb758226.js.map",
-    "787.d84832dd.chunk.js.map": "/leonarocregis/static/js/787.d84832dd.chunk.js.map"
+    "main.css": "/leonardocregis/static/css/main.de66ca14.css",
+    "main.js": "/leonardocregis/static/js/main.c480fb7b.js",
+    "static/js/787.d84832dd.chunk.js": "/leonardocregis/static/js/787.d84832dd.chunk.js",
+    "index.html": "/leonardocregis/index.html",
+    "main.de66ca14.css.map": "/leonardocregis/static/css/main.de66ca14.css.map",
+    "main.c480fb7b.js.map": "/leonardocregis/static/js/main.c480fb7b.js.map",
+    "787.d84832dd.chunk.js.map": "/leonardocregis/static/js/787.d84832dd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.de66ca14.css",
-    "static/js/main.cb758226.js"
+    "static/js/main.c480fb7b.js"
   ]
 }
