@@ -3,6 +3,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
+import ExpensesTable from './ExpensesTable'
+import Expence from './Expense';
 
 type OptionType = {
   [key: string]: string[];
@@ -75,18 +77,6 @@ const options: OptionType = {
 
 };
 
-interface Expence {
-  data: Date,
-  description: String,
-  valor: Number,
-  location: String,
-  category: String, 
-  subcategory: String
-}
-
-
-const listOfExpences: Expence[] = [];
-
 const App: React.FC = () => {
   
   useEffect (() => {
@@ -94,15 +84,17 @@ const App: React.FC = () => {
 
   },[]);
   
+  const [counter, setCounter] = useState<number>(0);
   const [date, setDate] = useState<Date>(new Date());
-  const [valor, setValor] = useState<number>(0.0);
+  const [valor, setValor] = useState<string>('');
   const [location, setLocation] = useState<string>('');
   const [description, setDescription] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<string>("");
+  const [expenses, setExpenses] = useState<Expence[]>([]);
 
   const handleValor = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValor(Number(event.target.value));
+    setValor(event.target.value);
   };
 
 
@@ -141,8 +133,12 @@ const App: React.FC = () => {
     }
   };
   
-  const addToList = () =>{
-    const entry : Expence = { 
+  const addToList = () => {
+
+    const newListOfExpenses = expenses;
+    const newCounter = counter +1;
+    const expence : Expence = { 
+      id: newCounter,
       data: date, 
       description: description,
       valor: valor,
@@ -150,15 +146,19 @@ const App: React.FC = () => {
       category: selectedCategory,
        subcategory: selectedOption
     }
-    listOfExpences.push(entry);
-    console.log(listOfExpences);
+    
+    newListOfExpenses.push(expence);
+    setExpenses(newListOfExpenses);
+    setCounter(newCounter);
+    console.log(expenses);
   }
 
+
   const generateCsv = () => {
-    console.log('processing list of expences ' + listOfExpences.map( val =>[val.data.toLocaleDateString(), val.description, val.location, val.category, val.subcategory]));
+    console.log('processing list of expences ' + expenses.map( val =>[val.data.toLocaleDateString(), val.description, val.location, val.category, val.subcategory]));
     const csvData = [];
     csvData.push(['Date', 'Description','valor','Location','selectedCategory','selectedOption']);
-    const aux : any[] = listOfExpences.map( val => [val.data.toLocaleDateString(), val.description, val.valor, val.location, val.category, val.subcategory]);
+    const aux : any[] = expenses.map( val => [val.data.toLocaleDateString(), val.description, val.valor, val.location, val.category, val.subcategory]);
     const concatenated = csvData.concat(aux);
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(concatenated);
@@ -170,7 +170,7 @@ const App: React.FC = () => {
     const blob = new Blob([csvBuffer], { type: 'text/csv' });
     FileSaver.saveAs(blob, 'data.csv');
   };
-
+      
   return (
     <div>
       <label htmlFor="date">Date:</label>
@@ -195,7 +195,7 @@ const App: React.FC = () => {
       <input
         id="valor"
         name="valor"
-        type="number"
+        type="text"
         value={valor}
         onChange={handleValor}
       />
@@ -241,6 +241,7 @@ const App: React.FC = () => {
       </div>
       <button onClick={addToList}>Add</button>
       <button onClick={generateCsv}>Download CSV</button>
+      <ExpensesTable expenses = {expenses} />
     </div>
     
   );
