@@ -5,7 +5,8 @@ interface Expense {
     valor: string,
     location: String,
     category: String, 
-    subcategory: String
+    subcategory: String,
+    conta: String
   }
 
   export default Expense;

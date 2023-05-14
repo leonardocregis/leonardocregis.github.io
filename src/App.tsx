@@ -5,6 +5,7 @@ import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import ExpensesTable from './ExpensesTable'
 import Expence from './Expense';
+import formatDate from './utils';
 
 type OptionType = {
   [key: string]: string[];
@@ -77,6 +78,9 @@ const options: OptionType = {
 
 };
 
+const contas: string[] = ['casa', 'leo'];
+
+
 const App: React.FC = () => {
   
   useEffect (() => {
@@ -91,6 +95,7 @@ const App: React.FC = () => {
   const [description, setDescription] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>("");
   const [selectedOption, setSelectedOption] = useState<string>("");
+  const [selectedConta, setSelectedConta ] = useState<string>("casa");
   const [expenses, setExpenses] = useState<Expence[]>([]);
 
   const handleValor = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +125,10 @@ const App: React.FC = () => {
     setDate( date );
   };
 
+  const handleContaChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedConta(event.target.value);
+  };
+
   
 
   const getCurrentLocaction =  () => {
@@ -144,7 +153,8 @@ const App: React.FC = () => {
       valor: valor,
       location: location,
       category: selectedCategory,
-       subcategory: selectedOption
+      subcategory: selectedOption,
+      conta: selectedConta,
     }
     
     newListOfExpenses.push(expence);
@@ -155,10 +165,10 @@ const App: React.FC = () => {
 
 
   const generateCsv = () => {
-    console.log('processing list of expences ' + expenses.map( val =>[val.data.toLocaleDateString(), val.description, val.location, val.category, val.subcategory]));
+    console.log('processing list of expences ' + expenses.map( val =>[val.data.toLocaleDateString(), val.description, val.location, val.category, val.subcategory, val.conta]));
     const csvData = [];
-    csvData.push(['Date', 'Description','valor','Location','selectedCategory','selectedOption']);
-    const aux : any[] = expenses.map( val => [val.data.toLocaleDateString(), val.description, val.valor, val.location, val.category, val.subcategory]);
+    csvData.push(['Date', 'Description','valor','Location','selectedCategory','selectedOption','conta']);
+    const aux : any[] = expenses.map( val => [val.data.toLocaleDateString(), val.description, val.valor, val.location, val.category, val.subcategory, val.conta]);
     const concatenated = csvData.concat(aux);
     const workbook = XLSX.utils.book_new();
     const worksheet = XLSX.utils.aoa_to_sheet(concatenated);
@@ -168,7 +178,8 @@ const App: React.FC = () => {
       type: 'array',
     });
     const blob = new Blob([csvBuffer], { type: 'text/csv' });
-    FileSaver.saveAs(blob, 'data.csv');
+    const filename:string = formatDate(date) + '-gastos.csv';
+    FileSaver.saveAs(blob, filename);
   };
       
   return (
@@ -191,7 +202,7 @@ const App: React.FC = () => {
         onChange={handleDescriptionChange}
       />
 
-      <label htmlFor="description">Valor:</label>
+      <label htmlFor="valor">Valor:</label>
       <input
         id="valor"
         name="valor"
@@ -238,6 +249,17 @@ const App: React.FC = () => {
             </select>
           </div>
         )}
+      </div>
+      <div>
+      <label htmlFor="conta-select">Conta:</label>
+        <select id="conta-select" value={selectedConta} onChange={handleContaChange}>
+          <option value="">Select a conta</option>
+          {Object.keys(contas).map((conta) => (
+            <option key={conta} value={parseInt(conta)}>
+              {contas[parseInt(conta)]}
+            </option>
+          ))}
+        </select>
       </div>
       <button onClick={addToList}>Add</button>
       <button onClick={generateCsv}>Download CSV</button>

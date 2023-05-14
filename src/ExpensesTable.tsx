@@ -16,6 +16,7 @@ function ExpensesTable({expenses}:Props  ) {
                         <th>Location</th>
                         <th>Category</th>
                         <th>Subcategory</th>
+                        <th>Conta</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,6 +28,7 @@ function ExpensesTable({expenses}:Props  ) {
                             <td>{expense.location}</td>
                             <td>{expense.category}</td>
                             <td>{expense.subcategory}</td>
+                            <td>{expense.conta}</td>
                         </tr>
                     ))}
                 </tbody>
