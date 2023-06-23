@@ -1,83 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import * as FileSaver from 'file-saver';
-import * as XLSX from 'xlsx';
 import ExpensesTable from './ExpensesTable'
 import Expence from './Expense';
 import generateCsv from './utils';
-
+import estructure from './categories';
 
 type OptionType = {
   [key: string]: string[];
 };
 
-const options: OptionType = {
-  alimentacao: ["hortifruti","mercado","padaria","rest / comer na rua leo","restaurante / comer fora"],
-  casa: ["cachorro",  "condominio",  "consertos da casa",  "doacoes",  "empregada",  "piraque",  "taxa: iptu / tx incendio",  "utilitarios"],
-  educacao: [
-    "cursos",
-    "livros",
-    "viagem"
-  ],
-  "escola filhos": [
-    "Atividades extras",
-    "mensalidade",
-    "natacao"
-  ],
-  "gastos pessoais": [
-    "antivirus / site",
-    "cabelereiro",
-    "carol",
-    "cashback",
-    "fraude",
-    "ir",
-    "loteria",
-    "milhas",
-    "presentes leo",
-    "presentes casa",
-    "reembolso sulamerica",
-    "restaurante / festa",
-    "roupas leo",
-    "roupas luisa",
-    "saque",
-    "saude",
-    "taxa cartao",
-    "to be defined"
-  ],
-  "lazer": [
-    "ativides com a luisa",
-    "brinquedos",
-    "eletronicos",
-    "festa e aniversario",
-    "gastos excessivos",
-    "programa de pontos - livelo",
-    "restaurante",
-    "streeeming",
-    "viagem"
-  ],
-  "saude": [
-    "academia",
-    "farmacia leo",
-    "farmacia casa",
-    "fisioterapia",
-    "medicos e exames",
-    "plano de saude"
-  ],
-  "transporte": [
-    "estacionamento / pedagio leo",
-    "estacionamento / pedagio carol",
-    "estacionamento / pedagio casa",
-    "gasolina leo",
-    "gasolina casa",
-    "gastos extras",
-    "ipva",
-    "manutencao cronos",
-    "seguro carro cronos",
-    "seguro carro palio"
-  ]
-
-};
+const options: OptionType = estructure;
 
 const contas: string[] = ['casa', 'leo'];
 
