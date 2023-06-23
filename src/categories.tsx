@@ -1,4 +1,5 @@
-let estructure = { alimentacao: ["hortifruti","mercado","padaria","rest / comer na rua leo","restaurante / comer fora"],
+const estructure = { 
+  alimentacao: ["hortifruti","mercado","padaria","rest / comer na rua leo","restaurante / comer fora"],
   casa: ["cachorro",  "condominio",  "consertos da casa",  "doacoes",  "empregada",  "piraque",  "taxa: iptu / tx incendio",  "utilitarios"],
   educacao: [
     "cursos",
@@ -62,4 +63,9 @@ let estructure = { alimentacao: ["hortifruti","mercado","padaria","rest / comer 
     "seguro carro palio"
   ]
 };
-  export default estructure;
+
+const contas: string[] = ['casa', 'leo'];
+
+const tipoPgs: string[] = ['cartao black','cartao itau','conta', 'dinheiro'];
+
+export  {estructure, contas, tipoPgs};
