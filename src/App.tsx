@@ -4,16 +4,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 import ExpensesTable from './ExpensesTable'
 import Expence from './Expense';
 import generateCsv from './utils';
-import estructure from './categories';
+import {contas, estructure} from './categories';
 
 type OptionType = {
   [key: string]: string[];
 };
 
 const options: OptionType = estructure;
-
-const contas: string[] = ['casa', 'leo'];
-
 
 const App: React.FC = () => {
   
