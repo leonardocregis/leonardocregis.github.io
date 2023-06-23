@@ -5,7 +5,8 @@ import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import ExpensesTable from './ExpensesTable'
 import Expence from './Expense';
-import formatDate from './utils';
+import generateCsv from './utils';
+
 
 type OptionType = {
   [key: string]: string[];
@@ -162,26 +163,7 @@ const App: React.FC = () => {
     setCounter(newCounter);
     console.log(expenses);
   }
-
-
-  const generateCsv = () => {
-    console.log('processing list of expences ' + expenses.map( val =>[val.data.toLocaleDateString(), val.description, val.location, val.category, val.subcategory, val.conta]));
-    const csvData = [];
-    csvData.push(['Date', 'Description','valor','Location','selectedCategory','selectedOption','conta']);
-    const aux : any[] = expenses.map( val => [val.data.toLocaleDateString(), val.description, val.valor, val.location, val.category, val.subcategory, val.conta]);
-    const concatenated = csvData.concat(aux);
-    const workbook = XLSX.utils.book_new();
-    const worksheet = XLSX.utils.aoa_to_sheet(concatenated);
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-    const csvBuffer = XLSX.write(workbook, {
-      bookType: 'csv',
-      type: 'array',
-    });
-    const blob = new Blob([csvBuffer], { type: 'text/csv' });
-    const filename:string = formatDate(date) + '-gastos.csv';
-    FileSaver.saveAs(blob, filename);
-  };
-      
+   
   return (
     <div>
       <label htmlFor="date">Date:</label>
@@ -262,7 +244,11 @@ const App: React.FC = () => {
         </select>
       </div>
       <button onClick={addToList}>Add</button>
-      <button onClick={generateCsv}>Download CSV</button>
+      <button onClick={() => { 
+        console.log('generating');
+        generateCsv(expenses, date);
+
+      }}>Download CSV</button>
       <ExpensesTable expenses = {expenses} />
     </div>
     
