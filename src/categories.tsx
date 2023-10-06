@@ -66,6 +66,6 @@ const estructure = {
 
 const contas: string[] = ['casa', 'leo'];
 
-const tipoPgs: string[] = ['cartao black','cartao itau','conta', 'dinheiro'];
+const tipoPgs: string[] = ['cartao itau black','cartao itau platino','cartao amazon','conta', 'dinheiro'];
 
 export  {estructure, contas, tipoPgs};
